@@ -1,0 +1,346 @@
+/* Base Styles */
+body {
+  background-color: #121212;
+  color: #ffffff;
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  font-weight: normal;
+}
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#search-input {
+  flex-grow: 1;
+  background-color: #1e1e1e;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#search-button {
+  background-color: #03a9f4;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+#search-button:hover {
+  background-color: #0288d1;
+}
+
+#search-button i {
+  margin-right: 5px;
+}
+
+/* Quill Editor */
+#toolbar {
+  margin-bottom: 10px;
+}
+
+#editor {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  min-height: 150px;
+  margin-bottom: 10px;
+}
+
+/* Tags Input */
+#tags-input {
+  background-color: #1e1e1e;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Mood Select */
+#mood-select {
+  background-color: #1e1e1e;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Calendar */
+#calendar {
+  background-color: #1e1e1e;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.calendar-date {
+  cursor: pointer;
+  padding: 5px;
+  margin: 2px 0;
+}
+
+.calendar-date:hover {
+  background-color: #2e2e2e;
+}
+
+/* Entry Card */
+.entry {
+  background-color: #1e1e1e;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, transform 0.2s;
+  cursor: move; /* Indicate that the entry can be moved */
+}
+
+/* Hover Effect */
+.entry:hover {
+  background-color: #2e2e2e;
+  transform: translateY(-2px);
+}
+
+/* Active (Dragging) State */
+.entry.ghost {
+  opacity: 0.5;
+}
+
+/* Entry Header */
+.entry-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Mood Icon */
+.entry-mood {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+/* Entry Date */
+.entry-date {
+  font-size: 14px;
+  color: #bbbbbb;
+}
+
+/* Entry Content */
+.entry-text {
+  font-size: 16px;
+  margin-top: 5px;
+  white-space: pre-wrap;
+}
+
+.entry-text[contenteditable="true"] {
+  border: 1px solid #ffffff;
+  padding: 5px;
+}
+
+/* Tags Display */
+.entry-tags {
+  margin-top: 5px;
+  color: #03a9f4;
+  font-size: 14px;
+}
+
+/* Entry Buttons */
+.entry-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.entry-buttons button {
+  background: none;
+  border: none;
+  color: #bbbbbb;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 5px;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.entry-buttons button:hover {
+  color: #ffffff;
+}
+
+.entry-buttons button:focus {
+  outline: none;
+}
+
+.entry-buttons button i {
+  pointer-events: none;
+}
+
+.entry-buttons button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -25px;
+  right: 50%;
+  transform: translateX(50%);
+  background-color: #333333;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.entry-buttons button:hover::after {
+  opacity: 1;
+}
+
+/* Entry Form */
+#entry-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+#entry-form textarea {
+  background-color: #1e1e1e;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 10px;
+}
+
+/* Add Entry Button */
+#add-entry-button {
+  background-color: #6200ee;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#add-entry-button i {
+  margin-right: 5px;
+}
+
+#add-entry-button:hover {
+  background-color: #3700b3;
+}
+
+/* File Input Container */
+.file-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#file-input {
+  display: none;
+}
+
+#load-button {
+  background-color: #03a9f4;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 1px;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+#load-button:hover {
+  background-color: #0288d1;
+}
+
+#load-button i {
+  margin-right: 5px;
+}
+
+/* Entries Container */
+#entries {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Export Button */
+#export-button {
+  background-color: #03dac6;
+  color: #000000;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}
+
+#export-button:hover {
+  background-color: #018786;
+}
+
+#export-button i {
+  margin-right: 5px;
+}
+
+/* Analytics Dashboard */
+#analytics-dashboard {
+  background-color: #1e1e1e;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+#analytics-dashboard h2 {
+  margin-top: 0;
+}
+
+#entries-chart {
+  max-width: 100%;
+}
+
+#mood-stats {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Additional Styles */
+button {
+  font-family: inherit;
+}
+
+select {
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
