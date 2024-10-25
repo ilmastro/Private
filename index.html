@@ -48,14 +48,16 @@
           <option value="tired">😴 Tired</option>
           <option value="angry">😠 Angry</option>
         </select>
-        <!-- Add ID to the button -->
+        <!-- Image Upload Field -->
+        <input type="file" id="image-input" accept="image/*" />
+        <!-- Add Entry Button -->
         <button type="submit" id="add-entry-button">
           <i class="fas fa-plus"></i> Add Entry
         </button>
       </form>
       <!-- File Input for Loading Entries -->
       <div class="file-input-container">
-        <input type="file" id="file-input" accept=".txt" multiple />
+        <input type="file" id="file-input" accept=".json" multiple />
         <button id="load-button">
           <i class="fas fa-file-upload"></i> Load Entries
         </button>
