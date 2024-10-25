@@ -213,6 +213,23 @@ h1 {
   opacity: 1;
 }
 
+/* Image Input */
+#image-input {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Entry Image */
+.entry-image {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
 /* Entry Form */
 #entry-form {
   display: flex;
