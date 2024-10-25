@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
   const tagsInput = document.getElementById("tags-input");
   const moodSelect = document.getElementById("mood-select");
+  const imageInput = document.getElementById("image-input"); // New image input
   const calendarDiv = document.getElementById("calendar");
   const analyticsDashboard = document.getElementById("analytics-dashboard");
   const entriesChartCtx = document
@@ -58,8 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ) => {
     // Convert filterText to lowercase for case-insensitive search
     const searchText = filterText.toLowerCase();
-
-    // entriesDiv.innerHTML = ''; // Remove this line, as Sortable.js manages DOM elements
 
     // Keep track of dates with entries that match the search criteria
     const datesWithEntries = new Set();
@@ -134,6 +133,14 @@ document.addEventListener("DOMContentLoaded", () => {
       entryContent.innerHTML = entry.content;
       entryDiv.appendChild(entryContent);
 
+      // Display Image if Present
+      if (entry.image) {
+        const img = document.createElement("img");
+        img.src = entry.image;
+        img.classList.add("entry-image");
+        entryDiv.appendChild(img);
+      }
+
       // Tags Display
       if (entry.tags && entry.tags.length > 0) {
         const tagsDiv = document.createElement("div");
@@ -177,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
     date = new Date(),
     tags = [],
     mood = "",
+    image = null,
     skipRender = false
   ) => {
     const newEntry = {
@@ -184,6 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       date,
       tags,
       mood,
+      image,
       id: generateUUID(), // Assign a unique ID when adding a new entry
     };
     entries.push(newEntry);
@@ -222,29 +231,16 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const exportEntries = () => {
-    let content = "";
-    entries.forEach((entry) => {
-      content += `${formatDate(new Date(entry.date))}\n`;
-      if (entry.tags && entry.tags.length > 0) {
-        content += `Tags: ${entry.tags.join(", ")}\n`;
-      }
-      if (entry.mood) {
-        content += `Mood: ${entry.mood}\n`;
-      }
-      // Extract plain text from HTML content
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = entry.content;
-      const plainText = tempDiv.textContent || tempDiv.innerText || "";
-      content += `${plainText}\n\n`;
-    });
-    const blob = new Blob([content], { type: "text/plain" });
+    // Export entries as a JSON file
+    const dataStr = JSON.stringify(entries, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "journal_entries.txt";
-    document.body.appendChild(a); // Append to body
+    a.download = "journal_entries.json";
+    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a); // Remove from body
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -252,76 +248,25 @@ document.addEventListener("DOMContentLoaded", () => {
     Array.from(files).forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const text = e.target.result;
-        parseAndAddEntries(text);
+        const jsonData = e.target.result;
+        try {
+          const importedEntries = JSON.parse(jsonData);
+          // Validate and add entries
+          importedEntries.forEach((entry) => {
+            if (entry.content && entry.date) {
+              // Ensure date is a Date object
+              entry.date = new Date(entry.date);
+              entries.push(entry);
+            }
+          });
+          saveEntries();
+          renderEntries();
+        } catch (err) {
+          alert("Invalid JSON file.");
+        }
       };
       reader.readAsText(file);
     });
-  };
-
-  const parseAndAddEntries = (text) => {
-    const entriesText = text.trim().split("\n");
-
-    let currentEntry = null;
-
-    const flushEntry = () => {
-      if (currentEntry && currentEntry.text.trim()) {
-        addEntry(
-          currentEntry.text.trim(),
-          currentEntry.date,
-          currentEntry.tags,
-          currentEntry.mood,
-          true // Skip render and save
-        );
-      }
-      currentEntry = null;
-    };
-
-    for (let i = 0; i < entriesText.length; i++) {
-      const line = entriesText[i].trim();
-
-      // Check for date line
-      const dateMatch = line.match(/^(\d{2}-\d{2}-\d{4})$/);
-      if (dateMatch) {
-        // If we have an existing entry, add it
-        flushEntry();
-
-        // Start a new entry
-        currentEntry = {
-          date: parseDate(dateMatch[1]),
-          tags: [],
-          mood: "",
-          text: "",
-        };
-      } else if (currentEntry) {
-        // Check for Tags line
-        const tagsMatch = line.match(/^Tags:\s*(.*)$/i);
-        if (tagsMatch) {
-          currentEntry.tags = tagsMatch[1]
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag);
-          continue; // Skip adding this line to text
-        }
-
-        // Check for Mood line
-        const moodMatch = line.match(/^Mood:\s*(.*)$/i);
-        if (moodMatch) {
-          currentEntry.mood = moodMatch[1].trim();
-          continue; // Skip adding this line to text
-        }
-
-        // Otherwise, accumulate the entry text
-        currentEntry.text += line + "\n";
-      }
-    }
-
-    // Flush the last entry
-    flushEntry();
-
-    // After adding all entries, save and render once
-    saveEntries();
-    renderEntries();
   };
 
   const searchEntries = () => {
@@ -470,11 +415,27 @@ document.addEventListener("DOMContentLoaded", () => {
       .map((tag) => tag.trim())
       .filter((tag) => tag);
     const mood = moodSelect.value;
+
+    const imageFile = imageInput.files[0];
     if (content) {
-      addEntry(content, new Date(), tags, mood);
-      editor.root.innerHTML = "";
-      tagsInput.value = "";
-      moodSelect.value = "";
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const imageData = e.target.result; // Base64 encoded image data
+          addEntry(content, new Date(), tags, mood, imageData);
+          editor.root.innerHTML = "";
+          tagsInput.value = "";
+          moodSelect.value = "";
+          imageInput.value = "";
+        };
+        reader.readAsDataURL(imageFile);
+      } else {
+        addEntry(content, new Date(), tags, mood);
+        editor.root.innerHTML = "";
+        tagsInput.value = "";
+        moodSelect.value = "";
+        imageInput.value = "";
+      }
     }
   });
 
